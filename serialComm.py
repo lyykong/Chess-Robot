@@ -1,12 +1,19 @@
 import serial
 import time
 
-# Setting up arduino serial connection
-arduino = serial.Serial(port='COM8', baudrate=9600, timeout=1)
+arduino = serial.Serial('COM8', 9600)
 time.sleep(2)
 
-arduino.write(b'Test Message\n')
-response = arduino.readline().decode('utf-8').strip()
-print("Received from Arduino:", response)
+print("Listening for data from Arduino...")
 
-arduino.close()
+while True:
+    if arduino.in_waiting > 0:
+        data = arduino.readline().decode('utf-8').strip()
+        print(f"Received: {data}")
+    
+    user_input = input("Press 'q' to quit or any other key to continue: ")
+    if user_input.lower() == 'q':
+        print("Exiting program.")
+        break
+
+arduino.close()  # Close the serial connection
